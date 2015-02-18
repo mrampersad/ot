@@ -5,9 +5,7 @@
 // div problems
 // - on ios you cannot popup a keyboard for a div?
 
-var monitor;
 var master;
-var slave = "";
 
 var UPDATE_FREQUENCY_MS = 1000;
 
@@ -21,6 +19,7 @@ var OT_DELETE = 2;
 
 var KEYCODE_BACKSPACE = 8;
 var KEYCODE_DELETE = 46;
+var KEYCODE_ENTER = 13;
 
 var ot = {
 	client_id: null,
@@ -49,12 +48,11 @@ var ot = {
 					// save our client_id
 					that.client_id = this.response.data;
 					
-					// start the receive pump
+					// initial receive
 					that.recvPump();
-					setInterval(function() { that.recvPump(); }, UPDATE_FREQUENCY_MS);
 					
-					// start the send pump
-					that.sendPump();
+					// start the pumps
+					setInterval(function() { that.recvPump(); }, UPDATE_FREQUENCY_MS);
 					setInterval(function() { that.sendPump(); }, UPDATE_FREQUENCY_MS);
 				} else if(this.status == HTTP_STATUS_STOPPED) {
 					// do nothing
@@ -120,7 +118,7 @@ var ot = {
 						throw this.response.message;
 					}
 					
-					// successful send means there should be something to retrieve
+					// successful send means there should be something to receive
 					setTimeout(function() { that.recvPump(); }, 0);
 				} else if(this.status == HTTP_STATUS_STOPPED) {
 					// do nothing
@@ -273,8 +271,6 @@ var ot = {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-	monitor = document.getElementById('monitor');
-	
 	master = document.getElementById('master');
 	
 	ot.init();
@@ -294,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			ot.send({ type: OT_DELETE, start: master.selectionStart });
 		}
 		
-		if(e.keyCode == 13) {
+		if(e.keyCode == KEYCODE_ENTER) {
 			ot.send({ type: OT_INSERT, start: master.selectionStart, text: "\n" });
 		} else {
 			ot.send({ type: OT_INSERT, start: master.selectionStart, text: String.fromCharCode(e.charCode) });
