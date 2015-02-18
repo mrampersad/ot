@@ -135,14 +135,19 @@ try {
 			if(!is_finite($_REQUEST['index'])) { throw new Exception('Finite index required.', 400); }
 			$index = $_REQUEST['index'];
 			
-			// FIXME: must validate this param
+			if(!isset($_REQUEST['client_id'])) { throw new Exception('Client ID required.', 400); }
+			if(!is_numeric($_REQUEST['client_id'])) { throw new Exception('Numeric Client ID required.', 400); }
+			if(!is_finite($_REQUEST['client_id'])) { throw new Exception('Finite Client ID required.', 400); }
 			$client_id = $_REQUEST['client_id'];
 			
-			// FIXME: must validate this param
+			if(!isset($_REQUEST['client_op_id'])) { throw new Exception('Client OP ID required.', 400); }
+			if(!is_numeric($_REQUEST['client_op_id'])) { throw new Exception('Numeric Client OP ID required.', 400); }
+			if(!is_finite($_REQUEST['client_op_id'])) { throw new Exception('Finite Client OP ID required.', 400); }
 			$client_op_id = $_REQUEST['client_op_id'];
 			
 			if(!isset($_REQUEST['op'])) { throw new Exception('Operation required.', 400); }
 			$op = json_decode($_REQUEST['op']);
+			if(is_null($op)) { throw new Exception('OP required.', 400); }
 			
 			$response = $ot->send($index, $client_id, $client_op_id, $op);
 			break;
